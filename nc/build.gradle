@@ -36,6 +36,7 @@ android {
 dependencies {
 
   implementation libs.appcompat.v7
+  implementation libs.kotlinx.coroutines.android
   testImplementation libs.junit
   androidTestImplementation libs.runner
   androidTestImplementation libs.espresso.core
