@@ -30,15 +30,17 @@ class Queue<T: Event> {
   suspend fun post(e: T) {
     val needDel: MutableList<Long> = ArrayList()
 
-    var entries: MutableSet<MutableMap.MutableEntry<Long, WeakReference<Item<T>>>>
+    val entries: MutableSet<Pair<Long, WeakReference<Item<T>>>> = HashSet()
     mutex.withLock {
-      entries = items.entries
+      for (item in items.entries) {
+        entries.add(Pair(item.key, item.value))
+      }
     }
 
     for (entry in entries) {
-      val item = entry.value.get()
+      val item = entry.second.get()
       if (item == null) {
-        needDel.add(entry.key)
+        needDel.add(entry.first)
         continue
       }
       item.block(e)
